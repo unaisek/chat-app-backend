@@ -1,6 +1,7 @@
-import { genSalt, hash } from "bcryptjs";
+import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
-import { emit } from "nodemon";
+
+const { genSalt, hash } = bcrypt
 
 const userSchema = new mongoose.Schema({
   email: {

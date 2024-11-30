@@ -3,7 +3,7 @@ import dotevn from 'dotenv'
 import cors from 'cors'
 import cookieParser from 'cookie-parser';
 import mongoose, { get } from 'mongoose';
-import authRoute from './routes/auth.route.js'
+import authRoutes from './routes/auth.route.js'
 
 dotevn.config();
 
@@ -19,9 +19,9 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json())
 
-app.use("/api/auth",authRoute)
+app.use("/api/auth",authRoutes)
 
-const server = app.listen(4000, ()=>{
+const server = app.listen(port, ()=>{
   console.log(`server is running at http://localhost:${port}`);
 })
 
