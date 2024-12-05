@@ -3,7 +3,8 @@ import dotevn from 'dotenv'
 import cors from 'cors'
 import cookieParser from 'cookie-parser';
 import mongoose, { get } from 'mongoose';
-import authRoutes from './routes/auth.route.js'
+import authRoutes from './routes/authRoute.js'
+import userRoutes from './routes/userRoute.js';
 
 dotevn.config();
 
@@ -16,10 +17,12 @@ app.use(cors({
   methods:["GET","POST","PUT","PATCH","DELETE"],
   credentials:true,
 }))
+app.use("/uploads/profiles", express.static("uploads/profiles"));
 app.use(cookieParser());
 app.use(express.json())
 
-app.use("/api/auth",authRoutes)
+app.use("/api/auth",authRoutes);
+app.use("/api/user", userRoutes)
 
 const server = app.listen(port, ()=>{
   console.log(`server is running at http://localhost:${port}`);
