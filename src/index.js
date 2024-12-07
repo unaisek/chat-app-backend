@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import mongoose, { get } from 'mongoose';
 import authRoutes from './routes/authRoute.js'
 import userRoutes from './routes/userRoute.js';
+import setupSocket from './socket.js';
 
 dotevn.config();
 
@@ -27,6 +28,8 @@ app.use("/api/user", userRoutes)
 const server = app.listen(port, ()=>{
   console.log(`server is running at http://localhost:${port}`);
 })
+
+setupSocket(server)
 
 mongoose.connect(databaseURL).then(()=>{console.log("DB connected successfully");
 "DB connection successfull"})
