@@ -6,6 +6,7 @@ import mongoose, { get } from 'mongoose';
 import authRoutes from './routes/authRoute.js'
 import userRoutes from './routes/userRoute.js';
 import setupSocket from './socket.js';
+import messageRoute from './routes/messagesRoute.js';
 
 dotevn.config();
 
@@ -23,7 +24,8 @@ app.use(cookieParser());
 app.use(express.json())
 
 app.use("/api/auth",authRoutes);
-app.use("/api/user", userRoutes)
+app.use("/api/user", userRoutes);
+app.use("/api/messages", messageRoute);
 
 const server = app.listen(port, ()=>{
   console.log(`server is running at http://localhost:${port}`);
