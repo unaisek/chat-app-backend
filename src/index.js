@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoute.js'
 import userRoutes from './routes/userRoute.js';
 import setupSocket from './socket.js';
 import messageRoute from './routes/messagesRoute.js';
+import channelRoute from './routes/channelRoute.js';
 
 dotevn.config();
 
@@ -28,6 +29,7 @@ app.use(express.json())
 app.use("/api/auth",authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/messages", messageRoute);
+app.use("/api/channel", channelRoute);
 
 const server = app.listen(port, ()=>{
   console.log(`server is running at http://localhost:${port}`);
