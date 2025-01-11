@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import User from "../models/userModel.js";
 import { renameSync, unlinkSync } from 'fs'
 import Message from "../models/messageModel.js";
-import { timeStamp } from "console";
+import cloudinary from "../utils/cloudinary.js";
 
 
 export const updateProfile = async (req,res,next) => {
@@ -37,17 +37,32 @@ export const updateProfile = async (req,res,next) => {
 
 export const updateProfileImage = async (req, res, next) => {
   try {
-    const {userId} = req
-    if(!req.file){
-      return res.status(400).send("file is required")
-    }   
-    const date = Date.now();
-    let fileName = "uploads/profiles/" + date + req.file.originalname;
-    renameSync(req.file.path, fileName);
+    const { userId } = req;
 
-    const user = await User.findByIdAndUpdate(userId,{image:fileName},{new:true, runValidators: true})
+    if (!req.file) {
+      return res.status(400).send("file is required");
+    }
+
+    const uploadToCloudinary = (fileBuffer) =>
+      new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { resource_type: "auto", folder: "profiles" },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+          }
+        );
+        uploadStream.end(fileBuffer);
+      });
+   const result = await uploadToCloudinary(req.file.buffer);
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { image: result.secure_url },
+      { new: true, runValidators: true }
+    );
     return res.status(200).json({
-      image: user.image
+      image: user.image,
     });
   } catch (error) {
     console.log({ error });
@@ -64,7 +79,8 @@ export const deleteProfileImage = async (req, res, next) => {
       return res.status(404).send("User not found")
     }
     if(user.image){
-      unlinkSync(user.image)
+      const publicId = user.image.split("/").slice(-1)[0].split(".")[0];     
+      await cloudinary.uploader.destroy(`profiles/${publicId}`);
     }
     user.image =null;
     await user.save();

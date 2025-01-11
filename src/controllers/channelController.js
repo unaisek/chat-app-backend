@@ -34,6 +34,7 @@ export const createChannel = async (req, res, next) => {
 
 export const getUserChannel = async (req, res, next) => {
   try {
+    const userId = req.userId
     const channels = await Channel.find({
       $or : [ { admin: userId }, { members: userId }]
     }).sort({ updatedAt: -1 });
